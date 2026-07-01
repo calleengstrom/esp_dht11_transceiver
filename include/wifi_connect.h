@@ -1,5 +1,6 @@
 #ifndef WIFI_CONNECT_H
 #define WIFI_CONNECT_H
+#include <stdbool.h>
 #include <string.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -22,6 +23,7 @@
 #define EXAMPLE_H2E_IDENTIFIER ""
 
 void wifi_init_sta(void);
-void wifi_connect(void);
+bool wifi_connect(void);
+void wifi_stop(void);
 
 #endif

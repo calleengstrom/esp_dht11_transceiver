@@ -16,17 +16,21 @@
 
 #include "../include/HTTPrequest.h"
 
-
-
 void wifi_connet_send_temp(int16_t hum, int16_t temp)
 {
-    wifi_connect();
-    vTaskDelay(pdMS_TO_TICKS(500));
-    clear_temperature_data();
-    send_temperature_data(temp, hum);
-    esp_wifi_stop();
-    vTaskDelay(pdMS_TO_TICKS(500));
+    if (wifi_connect())
+    {
+        vTaskDelay(pdMS_TO_TICKS(500));
+        clear_temperature_data();
+        send_temperature_data(temp, hum);
+    }
+    else
+    {
+        ESP_LOGW("main_task", "Wi-Fi could not be established, skipping upload");
+    }
 
+    wifi_stop();
+    vTaskDelay(pdMS_TO_TICKS(500));
 }
 
 void dht_task(void *args)
@@ -34,10 +38,10 @@ void dht_task(void *args)
 
     dht_sensor_type_t dht_sensor = DHT_TYPE_DHT11;
     gpio_num_t gpio_pin = GPIO_NUM_4;
-    int16_t hum = 0;
-    int16_t temp = 0;
     while (1)
     {
+        int16_t hum = 0;
+        int16_t temp = 0;
 
         vTaskDelay(pdMS_TO_TICKS(5000));
 
@@ -47,8 +51,8 @@ void dht_task(void *args)
         {
             ESP_LOGI("main_task", "Humidity=%d.%d%%, Temperature=%d.%d°C",
                      hum / 10, hum % 10, temp / 10, temp % 10);
-            
-           wifi_connet_send_temp(hum,temp);
+            vTaskDelay(pdMS_TO_TICKS(1000));
+            wifi_connet_send_temp(hum, temp);
         }
     }
 }
