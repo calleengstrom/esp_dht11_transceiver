@@ -49,7 +49,7 @@ static esp_err_t dht_fetch_data(dht_sensor_type_t sensor_type, gpio_num_t pin, u
     gpio_set_direction(pin, GPIO_MODE_OUTPUT_OD);
     gpio_set_pull_mode(pin, GPIO_PULLUP_ONLY);
     gpio_set_level(pin, 0);
-    esp_rom_delay_us(sensor_type == DHT_TYPE_SI7021 ? 500 : 18000);
+    esp_rom_delay_us(sensor_type == DHT_TYPE_SI7021 ? 500 : 25000);
 
     gpio_set_level(pin, 1);
     esp_rom_delay_us(40);
